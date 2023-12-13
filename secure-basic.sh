@@ -93,14 +93,16 @@ main() {
     SSHPORT=1122
     
 
-    echo "Add/update SSH authorized_keys [ed25519 key] (y/n):"
+    echo "Add/update SSH authorized_keys (y/n) [no]:"
     select yn in "Yes" "No"; do
         case $yn in
-            Yes ) 
+            Yes) 
                 SSHAUTHKEY=true
-                break
-                ;;
-            No )
+                break;;
+            No)
+                break;;
+            *)
+                echo "No update authorized_keys."; 
                 break;;
         esac
     done
@@ -115,21 +117,23 @@ main() {
 	[[ -z "$sshport" ]] && sshport="1122"
     SSHPORT=$sshport
 
-    echo "Do you want install HEXTRIXTOOL monitor? (y/n):"
+    echo "Do you want install HEXTRIXTOOL monitor? (y/n) [no]:"
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) 
                 read -p "Input your monitor id: " hextrixtool_id
                 HEXTRIXTOOL=$hextrixtool_id
-                break
-                ;;
+                break;;
             No ) 
+                break;;
+            *)
+                echo "No install Hextrixtools."; 
                 break;;
         esac
     done
 
     # Docker
-    echo "Do you want install or update Docker (y/n):"
+    echo "Do you want install or update Docker (y/n) [no]:"
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) 
@@ -137,6 +141,9 @@ main() {
                 break
                 ;;
             No )
+                break;;
+            *)
+                echo "No install Docker."; 
                 break;;
         esac
     done
@@ -163,7 +170,7 @@ main() {
 
 
     if [ "$HEXTRIXTOOL" = false ]; then
-      echo "No install Hextrixtool"
+      echo "No install Hextrixtools."
     else
       wget https://raw.githubusercontent.com/hetrixtools/agent/master/hetrixtools_install.sh && bash hetrixtools_install.sh $HEXTRIXTOOL 0 0 0 0 0 0
     fi

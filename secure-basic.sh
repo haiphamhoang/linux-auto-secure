@@ -73,14 +73,14 @@ This version of CentOS is too old and unsupported."
 	exit
 fi
 
-
-
 # Root check
 if [[ "$EUID" -ne 0 ]]; then
 	echo -e "${RED}Sorry, you need to run this as root${ENDCOLOR}"
 	exit 1
 fi
 
+# Detect current ssh port connect
+ssh_current_port= $(echo "$SSH_CLIENT" | awk '{print $3}')
 
 set -e
 
@@ -90,7 +90,7 @@ main() {
     DOCKERINSTALL=false
     HEXTRIXTOOL=false
     SSHAUTHKEY=false
-    SSHPORT=1122
+    SSHPORT=false
     
 
     echo "Add/update SSH authorized_keys (y/n) [no]:"
@@ -107,15 +107,15 @@ main() {
         esac
     done
 
+
+    read -p "Choose SSH Port (current $(ssh_current_port)): " sshport_update
+    until [[ -z "$sshport_update" || "$sshport_update" =~ ^[0-9]+$ && "$sshport_update" -le 65535 ]]; do
+        echo "$sshport_update: invalid port."
+        read -p "Port (current $(ssh_current_port)): " sshport_update
+    done
+    [[ -z "$sshport_update" ]] && sshport_update=$ssh_current_port
+    SSHPORT=$sshport_update
     
-	echo "Choose your SSH Port [1122]: " 
-    read -p "Note: SSH port will not update, if it already set." sshport
-	until [[ -z "$sshport" || "$sshport" =~ ^[0-9]+$ && "$sshport" -le 65535 ]]; do
-		echo "$sshport: invalid port."
-		read -p "Port [1122]: " sshport
-	done
-	[[ -z "$sshport" ]] && sshport="1122"
-    SSHPORT=$sshport
 
     echo "Do you want install HEXTRIXTOOL monitor? (y/n) [no]:"
     select yn in "Yes" "No"; do
@@ -242,11 +242,11 @@ sshkey_gen_file() {
 
 edit_ssh_config() {
     # edit sshd_config
-    sed -i "s/#Port 22/Port $SSHPORT/" /etc/ssh/sshd_config
-    sed -i 's/#StrictModes.*/StrictModes yes/' /etc/ssh/sshd_config
-    sed -i 's/#MaxAuthTries.*/MaxAuthTries 3/' /etc/ssh/sshd_config
-    sed -i 's/PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
-    sed -i 's/#PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+    sed -i "s/#\?Port $ssh_current_port/Port $SSHPORT/" /etc/ssh/sshd_config
+    sed -i 's/#\?StrictModes.*/StrictModes yes/' /etc/ssh/sshd_config
+    sed -i 's/#\?MaxAuthTries.*/MaxAuthTries 3/' /etc/ssh/sshd_config
+    sed -i 's/#\?PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+    sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
 
     # make sure sshd_config is valid
     sshd -t

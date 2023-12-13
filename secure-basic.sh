@@ -83,15 +83,12 @@ fi
 ssh_current_port=$(echo "$SSH_CLIENT" | awk '{print $3}')
 
 set -e
-
 main() {
-
     # Default option
     DOCKERINSTALL=false
     HEXTRIXTOOL=false
     SSHAUTHKEY=false
     SSHPORT=false
-    
 
     echo "Add/update SSH authorized_keys (y/n) [no]:"
     select yn in "Yes" "No"; do
@@ -107,11 +104,10 @@ main() {
         esac
     done
 
-
-    read -p "Choose SSH Port (current $(ssh_current_port)): " sshport_update
+    read -p "Choose SSH Port (current $ssh_current_port): " sshport_update
     until [[ -z "$sshport_update" || "$sshport_update" =~ ^[0-9]+$ && "$sshport_update" -le 65535 ]]; do
         echo "$sshport_update: invalid port."
-        read -p "Port (current $(ssh_current_port)): " sshport_update
+        read -p "Port (current $ssh_current_port): " sshport_update
     done
     [[ -z "$sshport_update" ]] && sshport_update=$ssh_current_port
     SSHPORT=$sshport_update

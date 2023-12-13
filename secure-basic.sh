@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# https://github.com
+# https://github.com/haiphamhoang/vps-basic-secure
 #
-# Copyright (c) 2022 haiphamhoang. Released under the MIT License.
+# Copy (c) 2023 by haiphamhoang.
 
 # Visual text settings
 RED="\e[31m"
@@ -14,6 +14,7 @@ REDB="\e[41m"
 GREENB="\e[42m"
 GRAYB="\e[47m"
 ENDCOLOR="\e[0m"
+
 # Detect Debian users running the script with "sh" instead of bash
 if readlink /proc/$$/exe | grep -q "dash"; then
 	echo 'This installer needs to be run with "bash", not "sh".'
@@ -221,9 +222,6 @@ main() {
     echo "Remember to reboot your system and delete the private key file located at $(pwd)/gensshkey after saving it!"
     
 }
-
-
-
 
 #######################################
 # Helper function

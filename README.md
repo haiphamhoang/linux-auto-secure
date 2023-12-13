@@ -1,6 +1,6 @@
 # What does this script do?
 Supported distros Ubuntu, Debian.
-- Automatically generates and configures SSH authentication keys (optional).
+- Automatically generates and configures SSH authentication keys (optional). The private key will be saved under directory  `./gensshkey`
 - Changes the SSH login port (optional).
 - Installs [Hextrixtool](https://hetrixtools.com/) monitoring (optional).
 - Installs [Docker](https://docs.docker.com/engine/install/debian/) (optional).

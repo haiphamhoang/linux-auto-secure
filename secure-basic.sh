@@ -80,7 +80,7 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 # Detect current ssh port connect
-ssh_current_port= $(echo "$SSH_CLIENT" | awk '{print $3}')
+ssh_current_port=$(echo "$SSH_CLIENT" | awk '{print $3}')
 
 set -e
 

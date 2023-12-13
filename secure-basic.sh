@@ -194,6 +194,7 @@ main() {
 
         docker --version
         docker compose version
+        echo "\n"
     fi
 
     # ssh-key update

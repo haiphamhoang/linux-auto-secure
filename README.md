@@ -1,10 +1,11 @@
 # What does this script do?
-Supported distros are Ubuntu, Debian.
-
-- Automatically generates and configures SSH authentication keys.
-- Changes the SSH login port.
-- Installs [Hextrixtool](https://hetrixtools.com/) monitoring.
-- Set timezone to Asia/Bangkok
+Supported distros Ubuntu, Debian.
+- Automatically generates and configures SSH authentication keys (optional).
+- Changes the SSH login port (optional).
+- Installs [Hextrixtool](https://hetrixtools.com/) monitoring (optional).
+- Installs [Docker](https://docs.docker.com/engine/install/debian/) (optional).
+- Sets the timezone to Asia/Bangkok.
+- Executes update and upgrade commands.
 
 # How to use?
 

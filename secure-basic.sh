@@ -5,15 +5,10 @@
 # Copy (c) 2023 by haiphamhoang.
 
 # Visual text settings
-RED="\e[31m"
-GREEN="\e[32m"
-GRAY="\e[37m"
-YELLOW="\e[93m"
-
-REDB="\e[41m"
-GREENB="\e[42m"
-GRAYB="\e[47m"
-ENDCOLOR="\e[0m"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+ENDCOLOR='\033[0m' # No Color
 
 # Detect Debian users running the script with "sh" instead of bash
 if readlink /proc/$$/exe | grep -q "dash"; then
@@ -91,7 +86,15 @@ main() {
     SSHAUTHKEY=false
     SSHPORT=false
 
-    echo "Add/update SSH authorized_keys (y/n) [no]:"
+    read -p "Change SSH Port, press Enter to keep the current one ($ssh_current_port):" sshport_update
+    until [[ -z "$sshport_update" || "$sshport_update" =~ ^[0-9]+$ && "$sshport_update" -le 65535 ]]; do
+        echo "$sshport_update: invalid port."
+        read -p "SSH Port (current $ssh_current_port): " sshport_update
+    done
+    [[ -z "$sshport_update" ]] && sshport_update=$ssh_current_port
+    SSHPORT=$sshport_update
+
+    echo "Add/update SSH authorized_keys?"
     select yn in "Yes" "No"; do
         case $yn in
             Yes) 
@@ -104,17 +107,9 @@ main() {
                 break;;
         esac
     done
-
-    read -p "Choose SSH Port (current $ssh_current_port): " sshport_update
-    until [[ -z "$sshport_update" || "$sshport_update" =~ ^[0-9]+$ && "$sshport_update" -le 65535 ]]; do
-        echo "$sshport_update: invalid port."
-        read -p "Port (current $ssh_current_port): " sshport_update
-    done
-    [[ -z "$sshport_update" ]] && sshport_update=$ssh_current_port
-    SSHPORT=$sshport_update
     
 
-    echo "Do you want install HEXTRIXTOOL monitor? (y/n) [no]:"
+    echo "Install HEXTRIXTOOL monitor?"
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) 
@@ -130,7 +125,7 @@ main() {
     done
 
     # Docker
-    echo "Do you want install or update Docker (y/n) [no]:"
+    echo "Install or update Docker?"
     select yn in "Yes" "No"; do
         case $yn in
             Yes ) 
@@ -195,31 +190,44 @@ main() {
 
         docker --version
         docker compose version
-        echo "\n"
     fi
 
     # ssh-key update
     if [ "$SSHAUTHKEY" = true ]; then
-        if [[ -e "/root/.ssh/authorized_keys" ]]; then
-            echo "Replace authorized_keys file..."
-            sshkey_gen_file
-            edit_ssh_config
-        else
-            # make sure ~/.ssh exists
-            mkdir -p /root/.ssh
-            echo "Add authorized_keys."
-            sshkey_gen_file
-            edit_ssh_config
+        echo "Update SSH authentication keys begin..."
+        if [ ! -d "/root/.ssh" ]; then
+            mkdir -p "/root/.ssh"
         fi
 
+        echo "Select sshkey option:"
+        select ossh in "Use my own key" "Make one" "Quit"; do
+            case $ossh in
+                "Use my own key") 
+                    echo "Input your public key:"
+                    read sshkey_pub
+                    echo $sshkey_pub > /root/.ssh/authorized_keys
+                    echo "Save at /root/.ssh/authorized_keys"
+                    break
+                    ;;
+                "Make one")
+                    sshkey_gen_file
+                    break;;
+                "Quit")
+                    echo "No update SSH authentication keys."
+                    break;;
+            esac
+        done
+
+        edit_ssh_config
         echo "Success update authorized_keys.";
         echo "Private key file will be located at: $(pwd)/gensshkey."
     fi
 
-    # remove file after completed.
-    # cd .. && rm -rf -- linux-shell-script
     echo "Completed."
-    echo "Remember to reboot your system and delete the private key file located at $(pwd)/gensshkey after saving it!"
+    if [ -d "./gensshkey" ]; then
+        echo -e "SSH key file saved at: ${GREEN}$(pwd)/gensshkey${ENDCOLOR}."
+    fi
+    echo "Remember to reboot your system!"
     
 }
 
@@ -229,7 +237,7 @@ main() {
 sshkey_gen_file() {
     echo "Generate sshkey file, make sure you save private key after script is done...."
     mkdir -p gensshkey
-    ssh-keygen -o -a 256 -t ed25519 -f ./gensshkey/key_file -C "root@$(hostname)-$(date +'%d-%m-%Y')"
+    ssh-keygen -o -a 256 -t ed25519 -f ./gensshkey/key_file -C "root@$(hostname)-$(date +'%Y%m%d')"
     puttygen ./gensshkey/key_file -O private -o ./gensshkey/putty_private_key.ppk
     cp ./gensshkey/key_file.pub /root/.ssh/authorized_keys
     chmod 600 /root/.ssh/authorized_keys

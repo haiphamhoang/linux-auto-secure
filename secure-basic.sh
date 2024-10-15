@@ -156,8 +156,8 @@ main() {
     # fi
     
     
-    apt update -y && apt upgrade -y
-    apt install wget curl putty-tools -y
+    apt-get update -y && apt-get upgrade -y
+    apt-get install wget curl putty-tools -y
     timedatectl set-timezone Asia/Bangkok
 
 
@@ -170,7 +170,9 @@ main() {
 
     if [ "$DOCKERINSTALL" = true ]; then
         echo "Install docker......"
-        apt remove docker.io docker-doc docker-compose podman-docker containerd runc -y
+        apt 
+        for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do apt-get remove $pkg; done
+
         apt-get install ca-certificates curl gnupg lsb-release -y
 
         install -m 0755 -d /etc/apt/keyrings

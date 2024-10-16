@@ -170,7 +170,7 @@ main() {
 
     if [ "$DOCKERINSTALL" = true ]; then
         echo "Install docker......" 
-        for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do apt-get remove $pkg; done
+        for pkg in docker.io docker-doc docker-compose containerd runc; do apt-get remove $pkg; done
 
         apt-get install ca-certificates curl gnupg lsb-release -y
 

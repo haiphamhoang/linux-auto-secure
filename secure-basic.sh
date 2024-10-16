@@ -253,9 +253,6 @@ edit_ssh_config() {
     sed -i 's/#\?PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
     sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
 
-    # make sure sshd_config is valid
-    sshd -t
-
     # restart ssh or sshd depending of the distro
     service ssh restart ; service sshd restart
 }

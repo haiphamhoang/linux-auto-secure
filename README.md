@@ -4,7 +4,6 @@ Supported distros Ubuntu, Debian.
 - Changes the SSH login port (optional).
 - Installs [Hextrixtool](https://hetrixtools.com/) monitoring (optional).
 - Installs [Docker](https://docs.docker.com/engine/install/debian/) (optional).
-- Sets the timezone to Asia/Bangkok.
 - Executes update and upgrade commands.
 
 # How to use?

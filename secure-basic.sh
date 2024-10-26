@@ -158,8 +158,6 @@ main() {
     
     apt-get update -y && apt-get upgrade -y
     apt-get install wget curl putty-tools -y
-    timedatectl set-timezone Asia/Bangkok
-
 
     if [ "$HEXTRIXTOOL" = false ]; then
       echo "No install Hextrixtools."

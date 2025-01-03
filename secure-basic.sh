@@ -229,7 +229,6 @@ configure_ssh_security() {
         esac
     done
 
-    update_ssh_config
     echo "Successfully updated authorized_keys"
 }
 
@@ -265,6 +264,7 @@ main() {
     install_hextrix
     install_docker
     configure_ssh_security
+    update_ssh_config
 
     # Final messages
     echo "Installation completed."

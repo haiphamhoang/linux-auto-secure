@@ -9,7 +9,7 @@ Supported distros Ubuntu, Debian.
 # How to use?
 
 ```bash
-wget -O  secure-basic.sh https://raw.githubusercontent.com/haiphamhoang/vps-basic-secure/main/secure-basic.sh
+wget -O  secure-basic.sh https://raw.githubusercontent.com/haiphamhoang/linux-auto-secure/main/secure-basic.sh
 chmod +x secure-basic.sh
 ./secure-basic.sh
 ```
